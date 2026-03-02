@@ -1,0 +1,122 @@
+particle.id	cydroid.global.deployment.v1
+name	cydroid.global.deployment.v1
+version	v1
+kind	deployment.authorization
+description	Global deployment authorization for Cydroid Toolkit, binding all installations to soul guardrails, neurorights, and ecological restoration mandates.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.global.deployment.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci,US-AZ-Maricopa-Phoenix
+created.at	2026-03-02T00:00:00Z
+updated.at	2026-03-02T00:00:00Z
+
+fields.id	deployment_id
+fields.type	uuid
+fields.description	Unique deployment identifier.
+
+fields.id	authorized_jurisdictions
+fields.type	list[string]
+fields.description	List of authorized deployment jurisdictions.
+fields.default	["US-AZ-Maricopa-Phoenix", "EU-GDPR", "Global-Globe"]
+
+fields.id	authorized_stakeholder_classes
+fields.type	list[string]
+fields.description	List of authorized stakeholder classes.
+fields.default	["CyberneticHost", "ClinicalOperator", "Regulator", "ClinicalSponsor", "NeurodataController", "EthicsBoard", "TelemetryOracle", "RegularStakeholder"]
+
+fields.id	soul_guardrail_required
+fields.type	bool
+fields.description	Whether soul guardrail compliance is required.
+fields.default	true
+
+fields.id	bio_safety_envelope_required
+fields.type	bool
+fields.description	Whether bio-safety envelope compliance is required.
+fields.default	true
+
+fields.id	neu_budget_required
+fields.type	bool
+fields.description	Whether NEU psych-risk budget is required.
+fields.default	true
+
+fields.id	eco_floor_minimum
+fields.type	f32
+fields.description	Minimum ecoscore required for continued operation.
+fields.default	0.86
+
+fields.id	power_threshold_minimum
+fields.type	f32
+fields.description	Minimum power threshold for node deployment (fraction of regional baseline).
+fields.default	0.005
+
+fields.id	eco_repositories_minimum
+fields.type	u32
+fields.description	Minimum eco-friendly repositories required per node.
+fields.default	5
+
+fields.id	weekly_activity_minimum
+fields.type	u32
+fields.description	Minimum weekly ecological contributions required.
+fields.default	1
+
+fields.id	rollback_capable
+fields.type	bool
+fields.description	Whether rollback capability is required.
+fields.default	true
+
+fields.id	consent_logging_required
+fields.type	bool
+fields.description	Whether consent logging is required.
+fields.default	true
+
+fields.id	row_ledger_required
+fields.type	bool
+fields.description	Whether ROW ledger logging is required.
+fields.default	true
+
+fields.id	evidence_bundles_required
+fields.type	bool
+fields.description	Whether evidence bundles are required for all claims.
+fields.default	true
+
+rights.invariants	\
+  bind.soul.guardrail=soul.guardrail.spec.v1;\
+  bind.bio.envelope=bio.safety.envelope.citizen.v1;\
+  bind.neu.budget=cybercore.neu.budget.v1;\
+  require.eco.floor=true;\
+  require.rollback.capable=true;\
+  require.consent.logging=true;\
+  require.row.ledger=true;\
+  require.evidence.bundles=true;\
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	bounded-by
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	bio.safety.envelope.citizen.v1
+cyberlink.relation	bounded-by
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	cybercore.neu.budget.v1
+cyberlink.relation	consumes
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	cydroid.evidence.bundle.v1
+cyberlink.relation	requires
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	cydroid.row.ledger.v1
+cyberlink.relation	logs-to
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	augmented.citizen.profile.v1
+cyberlink.relation	bound-to
+cyberlink.weighthint	0.99
+
+cyberlink.targetid	cydroid.community.council.v1
+cyberlink.relation	governed-by
+cyberlink.weighthint	0.9
+
+cyberlink.targetid	cydroid.deprecation.policy.v1
+cyberlink.relation	subject-to
+cyberlink.weighthint	0.9
