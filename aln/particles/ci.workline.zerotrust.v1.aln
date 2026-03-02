@@ -1,0 +1,61 @@
+particle.id	ci.workline.zerotrust.v1
+name	ci.workline.zerotrust.v1
+version	v1
+kind	ci.workline
+description	Zero-trust CI workline definition for Cydroid, enforcing soul guardrails, NEU budget checks, and ROW integrity at every stage.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/ci.workline.zerotrust.v1.aln
+jurisdiction.tags	US,US-AZ,US-AZ-Maricopa,US-AZ-Maricopa-Phoenix
+created.at	2026-03-02T00:00:00Z
+
+stages.order	ingest,validate,transform,index,release,monitor
+
+stage.ingest
+  action	pull_repository
+  constraint	require_signed_commits=true
+  constraint	require_did_binding=true
+
+stage.validate
+  action	run_security_audit
+  constraint	require_soul_guardrail_pass=true
+  constraint	require_neu_budget_check=true
+  constraint	forbid_soul_scoring_code=true
+
+stage.transform
+  action	compile_aln_particles
+  constraint	require_reproducible_builds=true
+  constraint	require_hash_verification=true
+
+stage.index
+  action	generate_evidence_bundle
+  constraint	require_10_hex_ids=true
+  constraint	require_row_link=true
+
+stage.release
+  action	deploy_to_sandbox
+  constraint	require_sandbox_pass=true
+  constraint	require_eco_floor_check=true
+
+stage.monitor
+  action	stream_telemetry
+  constraint	require_karma_metric_logging=true
+  constraint	require_rollback_ready=true
+
+rights.invariants	\
+  bind.soul.guardrail=soul.guardrail.spec.v1;\
+  bind.bio.envelope=bio.safety.envelope.citizen.v1;\
+  allow.rollback=true;\
+  require.audit.pqc=true;\
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	enforced-by
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	audit.pqc.rollback.v1
+cyberlink.relation	triggers-on-failure
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	karma.metric.spec.v1
+cyberlink.relation	logs-to
+cyberlink.weighthint	0.95
