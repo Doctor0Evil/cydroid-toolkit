@@ -8,7 +8,7 @@
 //! - **NeuroChannel**: Biophysical sensing modalities with safety limits and calibration metadata
 //! - **NeuromorphicEvent**: Event frames for spike trains and environmental snapshots
 //! - **EcoIndicator**: Strongly-typed ecological metrics with units and uncertainty
-//! - **RowEntry**: Append-only ledger entries with DID-anchored signatures
+//! - **RowLedger**: Append-only ledger entries with DID-anchored signatures
 //! - **ConsentRecord**: Formally Presented Statements (FPS) bound to participant DIDs
 //! - **SwarmPolicy**: Policy states for robot swarm control with biophysical triggers
 //! - **MissionManifest**: Parameterized mission templates with biome/hazard tags
