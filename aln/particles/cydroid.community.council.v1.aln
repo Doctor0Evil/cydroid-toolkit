@@ -1,0 +1,53 @@
+particle.id	cydroid.community.council.v1
+name	cydroid.community.council.v1
+version	v1
+kind	governance.council
+description	Constitution for Cydroid Community Councils, defining roles, voting rights, and ethics board interactions.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.community.council.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci
+created.at	2026-03-02T00:00:00Z
+
+fields.id	council_size_min
+fields.type	u32
+fields.default	5
+fields.description	Minimum council members.
+
+fields.id	council_size_max
+fields.type	u32
+fields.default	21
+fields.description	Maximum council members.
+
+fields.id	voting_threshold
+fields.type	f32
+fields.default	0.66
+fields.description	Threshold for passing proposals (2/3 majority).
+
+fields.id	ethics_board_seat_reserved
+fields.type	bool
+fields.default	true
+fields.description	One seat reserved for Ethics Board representative.
+
+fields.id	neurorights_advocate_seat_reserved
+fields.type	bool
+fields.default	true
+fields.description	One seat reserved for Neurorights Advocate.
+
+fields.id	term_limit_months
+fields.type	u32
+fields.default	12
+fields.description	Maximum term length.
+
+rights.invariants	\
+  bind.soul.guardrail=soul.guardrail.spec.v1;\
+  require.ethics.board.overseat=true;\
+  require.neurorights.advocate.seat=true;\
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	bounded-by
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	bostrom.governance.threshold.v1
+cyberlink.relation	consumes
+cyberlink.weighthint	0.95
