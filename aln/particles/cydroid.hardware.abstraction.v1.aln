@@ -1,0 +1,60 @@
+particle.id	cydroid.hardware.abstraction.v1
+name	cydroid.hardware.abstraction.v1
+version	v1
+kind	hardware.abstraction
+description	Hardware Abstraction Layer specification for Cydroid, ensuring interoperability across diverse robotic platforms (Hydrobots, Pipebots, Drones) while enforcing soul-safe constraints.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.hardware.abstraction.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci
+created.at	2026-03-02T00:00:00Z
+
+fields.id	supported_platforms
+fields.type	list[string]
+fields.default	["Hydrobot_v1", "Pipebot_v2", "Drone_Swarm_v1", "Static_Sensor_Node"]
+fields.description	List of certified hardware platforms.
+
+fields.id	sensor_interface_std
+fields.type	enum
+fields.enum.values	I2C|SPI|UART|CAN_BUS|AER
+fields.default	AER
+fields.description	Standard sensor interface (Asynchronous Event Representation preferred).
+
+fields.id	actuator_interface_std
+fields.type	enum
+fields.enum.values	PWM|GPIO|CAN_BUS|HYDRAULIC
+fields.default	PWM
+fields.description	Standard actuator interface.
+
+fields.id	safety_watchdog_required
+fields.type	bool
+fields.default	true
+fields.description	Hardware watchdog timer mandatory for all platforms.
+
+fields.id	neuromorphic_encoder_onboard
+fields.type	bool
+fields.default	true
+fields.description	Edge encoding required (no raw data offload).
+
+fields.id	soul_guardrail_enforcement_level
+fields.type	enum
+fields.enum.values	HARDWARE|FIRMWARE|SOFTWARE
+fields.default	HARDWARE
+fields.description	Level at which soul guardrails are enforced (Hardware preferred).
+
+rights.invariants	\
+  bind.soul.guardrail=soul.guardrail.spec.v1;\
+  require.hardware.watchdog=true;\
+  forbid.raw.biophysical.offload=true;\
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	enforced-by
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	cydroid.neuromorphic.encoder.v1
+cyberlink.relation	requires
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	bio.safety.envelope.citizen.v1
+cyberlink.relation	protects
+cyberlink.weighthint	0.95
