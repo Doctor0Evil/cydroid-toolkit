@@ -1,0 +1,49 @@
+particle.id	cybercore.neu.budget.v1
+name	cybercore.neu.budget.v1
+version	v1
+kind	budget.psych-risk
+description	NEU psych-risk budget specification. Bounded monotonic counter gating risky operations. Exhaustion triggers deterministic state transitions (rollback/quarantine).
+maintained.by	Cybercore-Brain
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cybercore.neu.budget.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci
+created.at	2026-03-02T00:00:00Z
+
+fields.id	neu_max_value
+fields.type	float
+fields.default	999.0
+fields.description	Maximum NEU budget value (exhaustion threshold).
+
+fields.id	neu_current_balance
+fields.type	float
+fields.default	999.0
+fields.description	Current NEU balance (decrements with high-risk use).
+
+fields.id	exhaustion_trigger
+fields.type	enum
+fields.enum.values	ROLLBACK|QUARANTINE|DOWNGRADE
+fields.default	ROLLBACK
+fields.description	Action triggered when NEU budget exhausted.
+
+fields.id	non_transferable
+fields.type	bool
+fields.default	true
+fields.description	NEU budget is identity-bound and cannot be traded.
+
+fields.id	replenishment_policy
+fields.type	string
+fields.default	"prosocial-clinical-flows"
+fields.description	NEU replenished only through prosocial, clinically beneficial flows.
+
+rights.invariants	\
+  bind.identity.did=required;\
+  forbid.token.trading=true;\
+  require.soul.guardrail.compliance=true;\
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	subordinate-to
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	audit.pqc.rollback.v1
+cyberlink.relation	triggers-on-exhaustion
+cyberlink.weighthint	1.0
