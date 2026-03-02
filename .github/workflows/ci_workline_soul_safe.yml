@@ -1,0 +1,59 @@
+name: Cydroid Soul-Safe CI Workline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+  SOUL_GUARDRAIL_SPEC: "soul.guardrail.spec.v1"
+  NEO_BUDGET_THRESHOLD: "0.5"
+
+jobs:
+  soul-guardrail-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Run Soul Guardrail Audit
+        run: cargo test --test integration_soul_safe
+      - name: Verify ALN Particles
+        run: |
+          python3 -c "import sys; sys.exit(0)" # Placeholder for ALN validator (Rust preferred)
+          # Actual implementation: cargo run --bin aln-validator -- check specs/
+
+  neu-budget-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check NEU Budget Constraints
+        run: |
+          echo "Checking NEU budget constraints in code..."
+          grep -r "NeuBudget" src/ || exit 0
+          # Ensure no hard-coded NEU values exist
+          ! grep -r "NEU_MAX = " src/ || exit 1
+
+  bio-safety-envelope-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Verify Bio-Safety Envelopes
+        run: |
+          echo "Verifying bio.safety.envelope.citizen.v1 alignment..."
+          cargo test --lib bio_envelope
+
+  deploy-soul-safe:
+    needs: [soul-guardrail-audit, neu-budget-check, bio-safety-envelope-check]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy to Testnet
+        run: |
+          echo "Deploying to Soul-Safe Testnet..."
+          # cargo run --bin deploy_soul_safe -- --manifest test_manifest.json --did did:ion:test
