@@ -1,0 +1,53 @@
+particle.id	cross.chain.bridge.spec.v1
+name	cross.chain.bridge.spec.v1
+version	v1
+kind	cross.chain.bridge
+description	Specification for secure cross-chain interactions between Cydroid/ALN and external chains (e.g., Bostrom, ERC-20). Enforces soul non-transferability across bridges.
+maintained.by	Cybercore-Brain
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cross.chain.bridge.spec.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci
+created.at	2026-03-02T00:00:00Z
+
+fields.id	allowed_external_chains
+fields.type	list[string]
+fields.default	["Bostrom", "Ethereum", "Cosmos"]
+fields.description	List of approved external chains for bridging.
+
+fields.id	soul_data_transfer_allowed
+fields.type	bool
+fields.default	false
+fields.description	Strict prohibition on transferring soul-bound data across chains.
+
+fields.id	asset_bridge_type
+fields.type	enum
+fields.enum.values	LOCK_MINT|BURN_RELEASE|ATOMIC_SWAP
+fields.default	LOCK_MINT
+fields.description	Mechanism for asset bridging.
+
+fields.id	governance_proof_required
+fields.type	bool
+fields.default	true
+fields.description	Whether governance proposals require cross-chain proof verification.
+
+fields.id	max_bridge_latency_ms
+fields.type	u32
+fields.default	5000
+fields.description	Maximum acceptable latency for bridge confirmations.
+
+rights.invariants	\
+  bind.soul.guardrail=soul.guardrail.spec.v1;\
+  forbid.soul.tokenization=true;\
+  require.pqc.signatures=true;\
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	bounded-by
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	cydroid-pqc-signer.v1
+cyberlink.relation	uses-signer
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	bostrom.governance.threshold.v1
+cyberlink.relation	governed-by
+cyberlink.weighthint	0.9
