@@ -1,0 +1,49 @@
+particle.id	cydroid.security.audit.v1
+name	cydroid.security.audit.v1
+version	v1
+kind	security.audit
+description	Security audit specification for Cydroid, ensuring alignment with Cybercore Soul Guardrails and NEU budgets.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.security.audit.v1.aln
+jurisdiction.tags	US,US-AZ,US-AZ-Maricopa,US-AZ-Maricopa-Phoenix
+created.at	2026-03-02T00:00:00Z
+
+fields.id	audit_type
+fields.type	enum
+fields.enum.values	SOUL_GUARDRAIL|NEU_BUDGET|BIO_ENVELOPE|ROW_INTEGRITY
+fields.description	Type of security audit to perform.
+
+fields.id	required_pass_score
+fields.type	f32
+fields.default	1.0
+fields.description	Minimum pass score required (1.0 = 100% compliance).
+
+fields.id	rollback_on_failure
+fields.type	bool
+fields.default	true
+fields.description	Whether to trigger rollback on audit failure.
+
+fields.id	soul_guardrail_spec_ref
+fields.type	string
+fields.default	"soul.guardrail.spec.v1"
+fields.description	Reference to Soul Guardrail specification.
+
+fields.id	neu_budget_spec_ref
+fields.type	string
+fields.default	"cybercore.neu.budget.v1"
+fields.description	Reference to NEU Budget specification.
+
+rights.invariants	\
+  bind.soul.guardrail=soul.guardrail.spec.v1;\
+  bind.neu.budget=cybercore.neu.budget.v1;\
+  require.zero.unsafe.code=true;\
+  require.rollback.on.failure=true;\
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	subordinate-to
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	cybercore.neu.budget.v1
+cyberlink.relation	consumes
+cyberlink.weighthint	0.95
