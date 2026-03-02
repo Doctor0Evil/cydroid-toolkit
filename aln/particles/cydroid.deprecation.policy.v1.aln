@@ -1,0 +1,48 @@
+particle.id	cydroid.deprecation.policy.v1
+name	cydroid.deprecation.policy.v1
+version	v1
+kind	governance.deprecation
+description	Deprecation and sunset policy for Cydroid components, ensuring safe migration paths and preventing abrupt capability loss for augmented citizens.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.deprecation.policy.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci
+created.at	2026-03-02T00:00:00Z
+
+fields.id	min_deprecation_notice_days
+fields.type	u32
+fields.default	90
+fields.description	Minimum notice period before deprecation.
+
+fields.id	migration_path_required
+fields.type	bool
+fields.default	true
+fields.description	Migration path must be provided for deprecated features.
+
+fields.id	critical_safety_components_exempt
+fields.type	bool
+fields.default	true
+fields.description	Critical safety components (e.g., soul guardrails) cannot be deprecated without replacement.
+
+fields.id	negative_karma_mitigation
+fields.type	bool
+fields.default	true
+fields.description	Deprecation must not generate negative karma for users (see uploaded docs on karma metrics).
+
+fields.id	rollback_available
+fields.type	bool
+fields.default	true
+fields.description	Rollback to previous version must be available during transition.
+
+rights.invariants	\
+  bind.soul.guardrail=soul.guardrail.spec.v1;\
+  require.migration.path=true;\
+  forbid.abrupt.capability.loss=true;\
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	protects
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	karma.metric.spec.v1
+cyberlink.relation	mitigates-negative-karma
+cyberlink.weighthint	0.95
