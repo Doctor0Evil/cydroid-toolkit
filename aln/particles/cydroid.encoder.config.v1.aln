@@ -1,0 +1,48 @@
+particle.id	cydroid.encoder.config.v1
+name	cydroid.encoder.config.v1
+version	v1
+kind	encoder.config
+description	Configuration particle for neuromorphic encoder kernels, defining thresholds, refractory periods, and safety envelopes.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.encoder.config.v1.aln
+jurisdiction.tags	US,US-AZ,US-AZ-Maricopa,US-AZ-Maricopa-Phoenix
+created.at	2026-03-02T00:00:00Z
+
+fields.id	channel_id
+fields.type	string
+fields.description	Reference to NeuroChannel ID in cydroid-spec.schema.yaml.
+
+fields.id	threshold
+fields.type	f32
+fields.description	Delta threshold for spike generation (in channel units).
+
+fields.id	refractory_period_ms
+fields.type	u32
+fields.description	Minimum time between spikes (milliseconds).
+
+fields.id	safety_envelope_ref
+fields.type	string
+fields.description	Reference to bio.safety.envelope.citizen.v1 or NeuroChannel safety limits.
+
+fields.id	quality_flag_policy
+fields.type	enum
+fields.enum.values	STRICT|LENIENT|AUDIT_ONLY
+fields.description	How to handle data quality flags (e.g., drift, artifact).
+
+rights.invariants	\
+  bind.channel.schema=cydroid-spec.schema.v1;\
+  require.safety.envelope=true;\
+  forbid.raw.data.export=true;\
+
+cyberlink.targetid	cydroid-spec.schema.v1
+cyberlink.relation	conforms-to
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	bio.safety.envelope.citizen.v1
+cyberlink.relation	bounded-by
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	cydroid.row.ledger.v1
+cyberlink.relation	logs-to
+cyberlink.weighthint	1.0
