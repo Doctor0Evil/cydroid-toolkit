@@ -1,0 +1,44 @@
+particle.id	cydroid.care.access.credit.v1
+name	cydroid.care.access.credit.v1
+version	v1
+kind	care.credit
+description	Non-monetary, non-transferable credit for ecological contribution redeemable for care services.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.care.access.credit.v1.aln
+jurisdiction.tags	US,US-AZ,US-AZ-Maricopa,US-AZ-Maricopa-Phoenix
+created.at	2026-03-02T00:00:00Z
+
+fields.id	cac_id
+fields.type	uuid
+fields.description	Unique credit identifier.
+
+fields.id	recipient_did
+fields.type	string
+fields.description	DID of credit recipient.
+
+fields.id	amount
+fields.type	f64
+fields.description	Credit balance.
+
+fields.id	non_transferable
+fields.type	bool
+fields.default	true
+fields.description	Must always be true (soul-bound).
+
+fields.id	redeemable_services
+fields.type	array[string]
+fields.description	List of care services (e.g., telehealth).
+
+rights.invariants	\
+  forbid.transfer=true;\
+  require.did.binding=true;\
+  require.eco.floor.met=true;\
+
+cyberlink.targetid	cydroid.row.ledger.v1
+cyberlink.relation	logged-in
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	bounded-by
+cyberlink.weighthint	1.0
