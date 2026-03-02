@@ -1,0 +1,36 @@
+particle.id	cydroid.evidence.bundle.v1
+name	cydroid.evidence.bundle.v1
+version	v1
+kind	evidence.bundle
+description	Verifiable evidence bundle aggregating 10-hex artifact IDs and ROW references.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.evidence.bundle.v1.aln
+jurisdiction.tags	US,US-AZ,US-AZ-Maricopa,US-AZ-Maricopa-Phoenix
+created.at	2026-03-02T00:00:00Z
+
+fields.id	bundle_id
+fields.type	uuid
+fields.description	Unique bundle identifier.
+
+fields.id	evidence_type
+fields.type	enum
+fields.enum.values	BIOPHYSICAL_SAFETY|ECO_IMPACT|SWARM_CONSENSUS|CONSENT_AUDIT|NEGATIVE_RESULT
+fields.description	Category of evidence.
+
+fields.id	hex_ids
+fields.type	array[string]
+fields.description	10-character hex identifiers for artifacts.
+
+fields.id	cyberrank_score
+fields.type	f32
+fields.description	Trust score (0.0-1.0) assigned by validators.
+
+rights.invariants	\
+  require.hex.validation=true;\
+  require.validator.did=true;\
+  allow.downrank=true;\
+
+cyberlink.targetid	cydroid.row.ledger.v1
+cyberlink.relation	linked-to
+cyberlink.weighthint	1.0
