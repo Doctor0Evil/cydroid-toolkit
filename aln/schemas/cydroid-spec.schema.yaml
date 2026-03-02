@@ -1,0 +1,394 @@
+# Cydroid Canonical ALN Schema v1.0
+# Single source of truth for all Cydroid bindings
+# Frozen: 2026-03-02 | DID: did:ion:EiD8J2b3K8k9Q8x9L7m2n4p1q5r6s7t8u9v0w1x2y3z4A5B6C7D8E9F0
+
+schema_version: "1.0.0"
+schema_id: "cydroid.canonical.schema.v1"
+maintainer: "The-Great-Perplexity"
+sourcerepo: "git+https://github.com/Doctor0Evil/Cydroid"
+jurisdiction_tags: ["US", "US-AZ", "US-AZ-Maricopa", "US-AZ-Maricopa-Phoenix"]
+
+# =============================================================================
+# NEUROCHANNEL DEFINITIONS
+# =============================================================================
+neurochannel:
+  type: object
+  required:
+    - channel_id
+    - modality_type
+    - unit
+    - calibration_metadata
+    - safety_limits
+  properties:
+    channel_id:
+      type: string
+      pattern: "^[a-zA-Z0-9_]+$"
+      description: "Unique identifier for this neurochannel"
+    modality_type:
+      type: enum
+      values: ["EEG", "EMG", "E_SKIN", "IMU", "SOIL_MOISTURE", "WATER_QUALITY", "AIR_QUALITY"]
+    unit:
+      type: string
+      description: "SI unit or domain-specific unit (e.g., µV, m³/m³, mg/L)"
+    calibration_metadata:
+      type: object
+      required: [calibration_date, calibration_method, uncertainty_estimate]
+      properties:
+        calibration_date:
+          type: string
+          format: "date-time"
+        calibration_method:
+          type: string
+        uncertainty_estimate:
+          type: number
+          minimum: 0.0
+    safety_limits:
+      type: object
+      required: [max_value, min_value, max_current_density_uA_per_cm2]
+      properties:
+        max_value:
+          type: number
+        min_value:
+          type: number
+        max_current_density_uA_per_cm2:
+          type: number
+          description: "Maximum electrode current density (biophysical safety)"
+        max_skin_contact_duration_minutes:
+          type: number
+        max_device_temperature_celsius:
+          type: number
+    semantic_uri:
+      type: string
+      description: "URI linking to external ontology (e.g., SWEET, OGC)"
+
+# =============================================================================
+# NEUROMORPHIC EVENT FRAMES
+# =============================================================================
+neuromorphic_event:
+  type: object
+  required:
+    - event_type
+    - timestamp
+    - channel_id
+    - data_quality_flags
+  properties:
+    event_type:
+      type: enum
+      values: ["NeuSpike", "NeuSpikeTrain", "NeuSpikeBatch", "EnvSnapshot", "EcoScore"]
+    timestamp:
+      type: string
+      format: "date-time"
+    channel_id:
+      type: string
+    data_quality_flags:
+      type: array
+      items:
+        type: enum
+        values: ["SENSOR_DRIFT", "BIOFOULING", "MOTION_ARTIFACT", "LOW_SNR", "PARTIAL_OCCLUSION"]
+    payload:
+      type: object
+      description: "Event-specific data (spike count, amplitude, eco-metric values)"
+
+# =============================================================================
+# ECO-INDICATOR BUNDLES
+# =============================================================================
+eco_indicator:
+  type: object
+  required:
+    - indicator_id
+    - value
+    - unit
+    - uncertainty
+    - biome_tag
+  properties:
+    indicator_id:
+      type: string
+      description: "e.g., turbidity, soil_moisture_30cm, biodiversity_index"
+    value:
+      type: number
+    unit:
+      type: string
+    uncertainty:
+      type: number
+      minimum: 0.0
+    biome_tag:
+      type: enum
+      values: ["URBAN_CANAL", "COASTAL_WETLAND", "SEMI_ARID_RIVER", "PERI_URBAN_AGRICULTURE", "DESERT_CORRIDOR"]
+    hazard_tag:
+      type: enum
+      values: ["HEATWAVE", "FLOOD_EVENT", "WILDFIRE_SMOKE", "SEVERE_STORM", "NONE"]
+    semantic_uri:
+      type: string
+      description: "Link to external eco-ontology"
+
+# =============================================================================
+# ROW LEDGER ENTRIES
+# =============================================================================
+row_entry:
+  type: object
+  required:
+    - row_id
+    - previous_entry_hash
+    - entry_type
+    - timestamp
+    - signer_did
+    - signature
+  properties:
+    row_id:
+      type: string
+      format: "uuid"
+    previous_entry_hash:
+      type: string
+      description: "SHA-256 hash of previous ROW entry (append-only chain)"
+    entry_type:
+      type: enum
+      values: ["NEUROMORPHIC_UPDATE", "SWARM_POLICY_EXECUTION", "ECO_METRIC_OBSERVATION", "CONSENT_EVENT", "SCHEMA_EVOLUTION_PROPOSAL", "COMMUNITY_DECISION", "CARE_ACCESS_CREDIT_GRANT"]
+    timestamp:
+      type: string
+      format: "date-time"
+    signer_did:
+      type: string
+      description: "DID of entity creating this entry"
+    signature:
+      type: string
+      description: "Cryptographic signature (Bostrom DID-anchored)"
+    payload:
+      type: object
+      description: "Entry-specific data"
+    evidence_bundle_ids:
+      type: array
+      items:
+        type: string
+      description: "References to evidence bundles (10-hex strings)"
+
+# =============================================================================
+# CONSENT & FPS (Formally Presented Statements)
+# =============================================================================
+consent_record:
+  type: object
+  required:
+    - consent_id
+    - participant_did
+    - fps_hash
+    - consent_version
+    - comprehension_check_passed
+    - timestamp
+    - revocable
+  properties:
+    consent_id:
+      type: string
+      format: "uuid"
+    participant_did:
+      type: string
+    fps_hash:
+      type: string
+      description: "Hash of the Formally Presented Statement"
+    consent_version:
+      type: string
+    comprehension_check_passed:
+      type: boolean
+    timestamp:
+      type: string
+      format: "date-time"
+    revocable:
+      type: boolean
+      default: true
+    data_use_scopes:
+      type: array
+      items:
+        type: string
+      description: "Permitted uses (e.g., mission_data, eco_metrics, biophysical_summary)"
+
+# =============================================================================
+# SWARM POLICY STATES
+# =============================================================================
+swarm_policy:
+  type: object
+  required:
+    - policy_id
+    - intent_class
+    - biome_tag
+    - safety_constraints
+    - eco_floor
+  properties:
+    policy_id:
+      type: string
+    intent_class:
+      type: enum
+      values: ["CANAL_CLEAN", "RIPARIAN_PLANTING", "URBAN_HEAT_RELIEF", "POLLUTANT_INTERCEPTION", "MICROBIAL_SEEDING"]
+    biome_tag:
+      type: enum
+      values: ["URBAN_CANAL", "COASTAL_WETLAND", "SEMI_ARID_RIVER", "PERI_URBAN_AGRICULTURE", "DESERT_CORRIDOR"]
+    safety_constraints:
+      type: object
+      properties:
+        max_swarm_tempo:
+          type: number
+        min_safety_radius_meters:
+          type: number
+        max_intervention_depth:
+          type: number
+    eco_floor:
+      type: number
+      minimum: 0.0
+      maximum: 1.0
+      description: "Minimum ecoscore required for continued operation (e.g., 0.86)"
+    biophysical_triggers:
+      type: object
+      description: "Human-robotics modulation rules (fatigue, stress, focus)"
+      properties:
+        high_fatigue_max_tempo:
+          type: number
+        high_stress_min_safety_radius:
+          type: number
+
+# =============================================================================
+# MISSION MANIFEST
+# =============================================================================
+mission_manifest:
+  type: object
+  required:
+    - mission_id
+    - corridor_id
+    - policy_id
+    - consent_requirements
+    - start_time
+    - end_time
+  properties:
+    mission_id:
+      type: string
+      format: "uuid"
+    corridor_id:
+      type: string
+    policy_id:
+      type: string
+    consent_requirements:
+      type: array
+      items:
+        type: string
+      description: "Required consent roles (operator, eco-scientist, community_steward)"
+    start_time:
+      type: string
+      format: "date-time"
+    end_time:
+      type: string
+      format: "date-time"
+    biome_tag:
+      type: enum
+      values: ["URBAN_CANAL", "COASTAL_WETLAND", "SEMI_ARID_RIVER", "PERI_URBAN_AGRICULTURE", "DESERT_CORRIDOR"]
+    hazard_tag:
+      type: enum
+      values: ["HEATWAVE", "FLOOD_EVENT", "WILDFIRE_SMOKE", "SEVERE_STORM", "NONE"]
+    required_eco_metrics:
+      type: array
+      items:
+        type: string
+    row_logging_enabled:
+      type: boolean
+      default: true
+
+# =============================================================================
+# EVIDENCE BUNDLE
+# =============================================================================
+evidence_bundle:
+  type: object
+  required:
+    - bundle_id
+    - evidence_type
+    - hex_ids
+    - timestamp
+  properties:
+    bundle_id:
+      type: string
+      format: "uuid"
+    evidence_type:
+      type: enum
+      values: ["BIOPHYSICAL_SAFETY", "ECO_IMPACT", "SWARM_CONSENSUS", "CONSENT_AUDIT", "NEGATIVE_RESULT"]
+    hex_ids:
+      type: array
+      items:
+        type: string
+        pattern: "^[a-f0-9]{10}$"
+      description: "10-character hex identifiers for evidence artifacts"
+    timestamp:
+      type: string
+      format: "date-time"
+    row_references:
+      type: array
+      items:
+        type: string
+      description: "ROW IDs linked to this evidence"
+
+# =============================================================================
+# CARE ACCESS CREDITS (Non-monetary incentives)
+# =============================================================================
+care_access_credit:
+  type: object
+  required:
+    - cac_id
+    - recipient_did
+    - amount
+    - mission_id
+    - conversion_rule
+  properties:
+    cac_id:
+      type: string
+      format: "uuid"
+    recipient_did:
+      type: string
+    amount:
+      type: number
+      minimum: 0.0
+    mission_id:
+      type: string
+    conversion_rule:
+      type: string
+      description: "e.g., '1000 ecoscore points = 1 CAC'"
+    redeemable_services:
+      type: array
+      items:
+        type: string
+      description: "e.g., telehealth, diagnostics, rehabilitation"
+    non_transferable:
+      type: boolean
+      default: true
+
+# =============================================================================
+# CROSS-LANGUAGE BINDING MATRIX
+# =============================================================================
+language_bindings:
+  rust:
+    crate_name: "cydroid-aln"
+    version: "1.0.0"
+    features: ["serde", "row-ledger", "neuromorphic-encoder"]
+  kotlin:
+    package: "org.cydroid.aln"
+    version: "1.0.0"
+    features: ["android-support", "offline-buffering"]
+  lua:
+    module: "cydroid_aln"
+    version: "1.0.0"
+    features: ["swarm-policy", "event-bus", "row-logger"]
+  javascript:
+    package: "@cydroid/aln"
+    version: "1.0.0"
+    features: ["dashboard-ui", "expert-view", "community-view"]
+  mojo:
+    module: "cydroid_neuromorphic"
+    version: "1.0.0"
+    features: ["encoder-kernels", "edge-profiling"]
+
+# =============================================================================
+# GOVERNANCE INVARIANTS
+# =============================================================================
+governance_invariants:
+  forward_only_schema_evolution: true
+  no_rollbacks_on_row: true
+  multisig_required_for_schema_changes: true
+  consent_always_revocable: true
+  soul_non_quantifiable: true
+  eco_floor_enforcement: true
+  minimum_ecoscore: 0.86
+  audit_logs_immutable: true
+  data_quality_flags_mandatory: true
+  calibration_metadata_required: true
