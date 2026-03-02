@@ -1,0 +1,63 @@
+[package]
+name = "cydroid-aln"
+version = "1.0.0"
+edition = "2021"
+description = "Cydroid ALN Schema Bindings and ROW Ledger Core"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Doctor0Evil/Cydroid"
+authors = ["The-Great-Perplexity", "Doctor0Evil"]
+keywords = ["aln", "neuromorphic", "ecological-restoration", "robotics", "row-ledger"]
+categories = ["embedded", "science", "encoding"]
+
+[features]
+default = ["serde", "row-ledger"]
+serde = ["dep:serde", "dep:serde_json"]
+row-ledger = ["dep:sha2", "dep:hex"]
+neuromorphic-encoder = ["dep:num-traits"]
+offline-buffering = ["dep:rusqlite"]
+android-support = []
+swarm-policy = []
+event-bus = []
+row-logger = []
+dashboard-ui = []
+expert-view = []
+community-view = []
+encoder-kernels = []
+edge-profiling = []
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"], optional = true }
+serde_json = { version = "1.0", optional = true }
+sha2 = { version = "0.10", optional = true }
+hex = { version = "0.4", optional = true }
+num-traits = { version = "0.2", optional = true }
+rusqlite = { version = "0.31", features = ["bundled"], optional = true }
+thiserror = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+[dev-dependencies]
+criterion = "0.5"
+proptest = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+
+[[bench]]
+name = "encoder_benchmark"
+harness = false
+
+[lib]
+name = "cydroid_aln"
+path = "src/lib.rs"
+crate-type = ["lib", "cdylib"]
+
+[[bin]]
+name = "cydroid-cli"
+path = "src/bin/cli.rs"
+
+[[bin]]
+name = "row-replay"
+path = "src/bin/row_replay.rs"
+
+[[bin]]
+name = "corridor-validator"
+path = "src/bin/corridor_validator.rs"
