@@ -1,0 +1,53 @@
+particle.id	cydroid.education.syllabus.v1
+name	cydroid.education.syllabus.v1
+version	v1
+kind	education.syllabus
+description	Educational syllabus for Cydroid developers and operators, covering Soul Guardrails, NEU Budgets, and Ecological Restoration.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.education.syllabus.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci
+created.at	2026-03-02T00:00:00Z
+
+fields.id	module_count
+fields.type	u32
+fields.default	5
+fields.description	Number of modules.
+
+fields.id	module_1_title
+fields.type	string
+fields.default	"Introduction to Soul Guardrails"
+fields.description	Module 1 title.
+
+fields.id	module_2_title
+fields.type	string
+fields.default	"NEU Budgets and Psych-Risk"
+fields.description	Module 2 title.
+
+fields.id	module_3_title
+fields.type	string
+fields.default	"ROW Ledger Integrity"
+fields.description	Module 3 title.
+
+fields.id	module_4_title
+fields.type	string
+fields.default	"Ecological Restoration Metrics"
+fields.description	Module 4 title.
+
+fields.id	module_5_title
+fields.type	string
+fields.default	"Community Governance"
+fields.description	Module 5 title.
+
+fields.id	certification_required
+fields.type	bool
+fields.default	true
+fields.description	Certification required for operators.
+
+rights.invariants	\
+  bind.soul.guardrail=soul.guardrail.spec.v1;\
+  require.certification=true;\
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	teaches
+cyberlink.weighthint	1.0
