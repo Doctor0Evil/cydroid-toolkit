@@ -1,0 +1,63 @@
+particle.id	soul.guardrail.spec.v1
+name	soul.guardrail.spec.v1
+version	v1
+kind	policy.guardrail.v1
+description	Formal soul-boundary and harm-zeroing constraints for CI, OTA, XR, nanoswarm, and governance controllers. Constrains configurations, not capabilities.
+maintained.by	Cybercore-Brain
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/soul.guardrail.spec.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci
+created.at	2026-03-02T00:00:00Z
+
+fields.id	soul_nonmeasurable
+fields.type	bool
+fields.default	true
+fields.description	Soul is never treated as a measurable quantity.
+
+fields.id	forbid_soul_scoring
+fields.type	bool
+fields.default	true
+fields.description	No ranks, scores, or qualities may be attached to souls.
+
+fields.id	forbid_soul_targeting
+fields.type	bool
+fields.default	true
+fields.description	No direct targeting of souls as optimization objectives.
+
+fields.id	require_consent_logging
+fields.type	bool
+fields.default	true
+fields.description	All soul-touching actions must log consent state.
+
+fields.id	require_reversibility
+fields.type	bool
+fields.default	true
+fields.description	Actions must support rollback or remedial pathways.
+
+fields.id	preserve_capability_categories
+fields.type	list[string]
+fields.default	["motor-augmentation","sensory-augmentation","cognitive-assist","rehab-support","memory-restoration"]
+fields.description	Capability classes that this guardrail must NOT disable.
+
+fields.id	statement_constrains_config_not_capability
+fields.type	string
+fields.default	"This guardrail applies to configurations, control paths, and action policies only. It MUST NOT be used to disable or ban lawful, consented augmentation capabilities."
+
+rights.invariants	\
+  bind.envelope.particle=bio.safety.envelope.citizen.v1;\
+  bind.envelope.kernel=bio.safety.envelope.citizen.viability-kernel.v1;\
+  allow.envelope.expansion=false;\
+  preserve.augmented.citizen.capabilities=true;\
+  require.rollback.channels=true;\
+
+cyberlink.targetid	bio.safety.envelope.citizen.v1
+cyberlink.relation	co-bounded-with
+cyberlink.weighthint	0.96
+
+cyberlink.targetid	karma.metric.spec.v1
+cyberlink.relation	annotated-by
+cyberlink.weighthint	0.94
+
+cyberlink.targetid	augmented.citizen.profile.v1
+cyberlink.relation	required-by
+cyberlink.weighthint	0.99
