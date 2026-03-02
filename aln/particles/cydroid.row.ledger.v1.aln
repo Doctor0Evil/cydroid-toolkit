@@ -1,0 +1,54 @@
+particle.id	cydroid.row.ledger.v1
+name	cydroid.row.ledger.v1
+version	v1
+kind	row.ledger.core
+description	Append-only ROW ledger specification for Cydroid, with DID-anchored signatures and forward-only chain integrity.
+maintained.by	The-Great-Perplexity
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/cydroid.row.ledger.v1.aln
+jurisdiction.tags	US,US-AZ,US-AZ-Maricopa,US-AZ-Maricopa-Phoenix
+created.at	2026-03-02T00:00:00Z
+updated.at	2026-03-02T00:00:00Z
+
+fields.id	row_id
+fields.type	uuid
+fields.description	Unique ROW entry identifier.
+
+fields.id	previous_entry_hash
+fields.type	string
+fields.description	SHA-256 hash of previous entry (empty for genesis).
+
+fields.id	entry_type
+fields.type	enum
+fields.enum.values	NEUROMORPHIC_UPDATE|SWARM_POLICY_EXECUTION|ECO_METRIC_OBSERVATION|CONSENT_EVENT|SCHEMA_EVOLUTION_PROPOSAL|COMMUNITY_DECISION|CARE_ACCESS_CREDIT_GRANT|SAFETY_VIOLATION|ROLLBACK_EVENT
+fields.description	Type of ledger entry.
+
+fields.id	signer_did
+fields.type	string
+fields.description	DID of entity creating this entry.
+
+fields.id	signature
+fields.type	string
+fields.description	Cryptographic signature (hex-encoded).
+
+fields.id	evidence_bundle_ids
+fields.type	array[string]
+fields.description	10-character hex identifiers for evidence artifacts.
+
+rights.invariants	\
+  bind.envelope.particle=cydroid-spec.schema.v1;\
+  allow.rollbacks=false;\
+  require.signatures=true;\
+  require.evidence.bundles=true;\
+
+cyberlink.targetid	cydroid-spec.schema.v1
+cyberlink.relation	conforms-to
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	cydroid.consent.records.v1
+cyberlink.relation	contains
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	cydroid.swarm.policy.v1
+cyberlink.relation	contains
+cyberlink.weighthint	0.95
