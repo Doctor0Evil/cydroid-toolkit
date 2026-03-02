@@ -1,0 +1,54 @@
+particle.id	bostrom.governance.threshold.v1
+name	bostrom.governance.threshold.v1
+version	v1
+kind	governance.threshold
+description	Chain-governed threshold parameters for CyberStakeholderScore and safety roles. Adjustable only via multi-sig proposal with EthicsBoard/NeurodataController co-signature.
+maintained.by	Cybercore-Brain
+sourcerepo	git+https://github.com/Doctor0Evil/Cydroid.git
+spec.path	aln/particles/bostrom.governance.threshold.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci
+created.at	2026-03-02T00:00:00Z
+
+fields.id	min_cyber_score_for_voting
+fields.type	f32
+fields.default	0.5
+fields.description	Minimum CyberStakeholderScore required to vote on neurorights proposals.
+fields.bounds	0.3,0.7
+
+fields.id	min_cyber_score_for_safety_roles
+fields.type	f32
+fields.default	0.6
+fields.description	Minimum score for safety-critical roles (e.g., rollback authority).
+fields.bounds	0.4,0.8
+
+fields.id	epoch_duration_days
+fields.type	u32
+fields.default	90
+fields.description	Duration of governance epoch for batch classification.
+
+fields.id	realtime_latency_ms
+fields.type	u32
+fields.default	150
+fields.description	Max latency for real-time safety profile decisions.
+
+rights.invariants	\
+  bind.stakeholder.class=bostrom-aln-stakeholders.v1;\
+  require.ethics.board.cosign=true;\
+  require.neurodata.controller.cosign=true;\
+  forbid.hardcoded.thresholds=true;\
+
+cyberlink.targetid	bostrom-aln-stakeholders.v1
+cyberlink.relation	consumes
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	subordinate-to
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	ethics.board.registry.v1
+cyberlink.relation	requires-approval-from
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	neurodata.controller.registry.v1
+cyberlink.relation	requires-approval-from
+cyberlink.weighthint	0.95
